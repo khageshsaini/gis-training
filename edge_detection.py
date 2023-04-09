@@ -1,4 +1,5 @@
 import rasterio
+import os
 import numpy as np
 from skimage import filters, exposure, morphology, measure, segmentation, feature, transform
 from scipy import ndimage
@@ -30,8 +31,12 @@ shapes_ws = features.shapes(binary.astype('uint16'), transform=raster.transform)
 # Define the schema for the shapefile
 schema = {'geometry': 'Polygon', 'properties': {'id': 'int'}}
 
+folder_path = 'output/vectors'
+if not os.path.exists(folder_path):
+    os.makedirs(folder_path)
+
 # Open a new shapefile for writing
-with fiona.open('output/vectors/dsm.shp', 'w', 'ESRI Shapefile', schema) as dst:
+with fiona.open(folder_path + '/dsm.shp', 'w', 'ESRI Shapefile', schema) as dst:
     # Write the geometries to the shapefile
     for i, shape in enumerate(shapes_ws):
         geom, value = shape
